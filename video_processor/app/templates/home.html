@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Home Page</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    .card {
+      border: 1px solid #47616c;
+      border-radius: 12px;
+      margin: 0 1rem;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      max-width: 800px;
+      width: 80%;
+      /* Set width to 80% of its container */
+    }
+
+    .header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .img-box {
+      width: 200px;
+      height: 300px;
+     
+      overflow: hidden;
+    }
+
+    .img {
+      width: 100%;
+    }
+
+    .form-container {
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #47616c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="header">
+
+      <h4>Welcome to Edulance.AI</h4>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <!-- First Column -->
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="img-box">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg" class="img"
+                  alt="Phone image">
+              </div>
+              <a href="/login" class="google-btn">
+                <div class="google-icon"></div>
+                <button type="submit" class="btn-login"><i class="fa fa-google" aria-hidden="true"></i>Signin with Google</button>
+            </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="form-container">
+                <form>
+                  <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                  </div>
+                  <button type="submit" class="btn-login">Login</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Second Column -->
+      </div>
+    </div>
+    <div class="container">
+
+    </div>
+
+  </div>
+</body>
+
+</html>

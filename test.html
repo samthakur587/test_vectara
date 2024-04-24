@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial Page</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <!-- Custom CSS -->
+    <style>
+        .profile-img {
+            width: 40px;
+            /* Set width to 100px or adjust as needed */
+            height: 40px;
+            /* Maintain aspect ratio */
+            border-radius: 50%;
+            /* Make it circular */
+        }
+
+        /* Custom Navbar Styling */
+        .navbar {
+            background-color: #2c3e50;
+            /* Dark blue */
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            /* White */
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff;
+            /* White */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #f8f9fa;
+            /* Light grey */
+        }
+
+        .navbar-toggler {
+            border-color: #ffffff;
+            /* White */
+        }
+
+        .navbar-toggler-icon {
+            background-color: #ffffff;
+            /* White */
+        }
+
+        /* Custom Card Styling */
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #34495e;
+            /* Dark grey */
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group-append button {
+            border-radius: 0 5px 5px 0;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            /* Blue */
+            border-color: #3498db;
+            /* Blue */
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            /* Darker blue */
+            border-color: #2980b9;
+            /* Darker blue */
+        }
+
+        .badge {
+            bottom: 0;
+            /* Align to the bottom */
+            right: 0;
+            /* Align to the right */
+            background-color: #f39c12;
+            /* Yellow */
+            color: #f01a1a;
+            /* White text */
+            padding: 5px 10px;
+            /* Padding */
+            border-radius: 10px;
+            /* Rounded corners */
+            font-size: 12px;
+            /* Font size */
+        }
+
+        .badge i {
+            margin-right: 5px;
+            /* Add space between icon and text */
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand" href="#">Edulance.AI</a>
+            <div class="mx-1 badge">
+                <i class="fas fa-star"></i>
+                <!-- Star icon --> 10 credits left
+                <!-- Credits text -->
+            </div>
+            <img src="{{user['picture']}}" class="profile-img"></img>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/welcome">Home <span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Go to Modules</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Leaderboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="jumbotron mt-3">
+            <h1 class="display-8">Welcome</h1>
+            <p class="lead">Get Started with learning by extracting info from Videos.</p>
+            <hr class="my-4">
+            <p>Start learning on your modules made earlier.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button">Start Learning </a>
+        </div>
+        <div class="container">
+            <div class="row">
+                <!-- Card for uploading transcript -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upload Transcript:</h5>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="transcriptInput"
+                                        @change="handleTranscriptUpload">
+                                    <label class="custom-file-label" for="transcriptInput">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card for uploading OCR -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upload OCR:</h5>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="ocrInput"
+                                        @change="handleOCRUpload">
+                                    <label class="custom-file-label" for="ocrInput">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload button -->
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <select class="form-select mb-3" v-model="userProficiency">
+                        <option value="easy">Easy</option>
+                        <option value="medium">Medium</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                    <button class="btn btn-primary" type="button" @click="generateLesson">
+                        Generate Lesson
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="container">
+                {{ lesson }}
+            </div>
+            <div class="container">
+                {{ quiz }}
+            </div>
+            <div v-if="quiz">
+                <h2>Quiz</h2>
+                <ol>
+                    <li v-for="(question, index) in quiz.questions" :key="index">
+                        <h4>{{ question }}</h4>
+                        <ul>
+                            <li v-for="(answer, answerIndex) in quiz.answers[index]" :key="answerIndex">
+                                {{ answer }}
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+            <div v-if="lesson">
+                <h2>{{ lesson.lesson_planner_obj.Title }}</h2>
+
+                <h3>Lesson Objectives</h3>
+                <ul>
+                    <li v-for="objective in lesson.lesson_planner_obj.LessonObjectives" :key="objective">
+                        {{ objective }}
+                    </li>
+                </ul>
+
+                <h3>Motivation</h3>
+                <ul>
+                    <li v-for="motivation in lesson.lesson_planner_obj.Motivation" :key="motivation">
+                        {{ motivation }}
+                    </li>
+                </ul>
+
+                <h3>Summary</h3>
+                <p>{{ lesson.lesson_planner_obj.Summary }}</p>
+
+                <h3>Topics</h3>
+                <ul>
+                    <li v-for="topic in lesson.lesson_planner_obj.Topics" :key="topic">
+                        {{ topic }}
+                    </li>
+                </ul>
+
+                <h3>Lesson Generator</h3>
+                <p>{{ lesson.lesson_generator_obj }}</p>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- Vue.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Vue.js Logic -->
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                transcriptFile: null,
+                userProficiency: "medium",
+                ocrFile: null,
+                quiz: null,
+                ocrFile: null,
+                lesson: null,
+                xp: 100, // Example XP value
+                leaderboardRank: 5, // Example leaderboard rank
+                dailyStreak: 7 // Example daily streak
+            },
+            watch: {
+                ocrFile(newValue) {
+                    // Check if a file is selected
+                    if (newValue) {
+                        // Call the method to handle file upload
+                        this.handleOCRUpload();
+                    }
+                }
+            },
+
+            methods: {
+                handleTranscriptUpload(event) {
+                    // Retrieve the uploaded transcript file
+                    this.transcriptFile = event.target.files[0];
+
+                    // Create a FormData object to send the file
+                    const formData = new FormData();
+                    formData.append('file', this.transcriptFile);
+
+                    // Make the fetch request
+                    fetch('http://146.148.47.251:7002/upload-txt', {
+                        method: 'POST',
+                        headers: {
+                            'accept': 'application/json'
+                            // No need to set 'Content-Type' header, FormData handles it
+                        },
+                        body: formData
+                    })
+                        .then(response => {
+                            // Handle response
+                            // For example, log the response or perform further actions
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            // Handle error
+                            console.error('Error:', error);
+                        });
+                },
+                handleOCRUpload() {
+                    // Create a FormData object to send the file
+                    const formData = new FormData();
+                    formData.append('file', this.ocrFile);
+
+                    // Make the fetch request
+                    fetch('http://146.148.47.251:7002/ocr', {
+                        method: 'POST',
+                        headers: {
+                            'accept': 'application/json'
+                            // No need to set 'Content-Type' header, FormData handles it
+                        },
+                        body: formData
+                    })
+                        .then(response => {
+                            // Handle response
+                            // For example, log the response or perform further actions
+                            console.log(response);
+                        })
+                        .catch(error => {
+                            // Handle error
+                            console.error('Error:', error);
+                        });
+                },
+
+                generateLesson() {
+                    // Check if both transcript and OCR files are selected
+                    if (!this.transcriptFile || !this.ocrFile) {
+                        alert('Please select both transcript and OCR files.');
+                        return;
+                    }
+                    const url = http://146.148.47.251:7002/generate-lesson?user_proficiency=${this.userProficiency};
+
+                    // Make the fetch request
+                    try {
+                        const response = fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'accept': 'application/json'
+                            },
+                            // No need for body since it's empty in this case
+                        });
+
+                        // Check if the response is successful
+                        if (response.ok) {
+                            const lessonData = response.json();
+                            // Handle the lesson data, for example:
+                            console.log(lessonData);
+                            this.lesson = lessonData;
+
+                        } else {
+                            console.error('Failed to generate lesson:', response.status);
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+
+                }
+            },
+            generateQuiz() {
+                const url = http://146.148.47.251:7002/generate-quiz?user_proficiency=${this.userProficiency};
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'application/json'
+                    },
+                    // No need for body since it's empty in this case
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Failed to generate quiz');
+                        }
+                    })
+                    .then(quizData => {
+                        // Handle the quiz data, for example:
+                        console.log(quizData);
+                        this.quiz = quizData;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+        });
+    </script>
+
+</body>
+
+</html>

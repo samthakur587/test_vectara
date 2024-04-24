@@ -1,0 +1,5 @@
+../.env
+../.gitpod.yml
+dump.rdb
+celerybeat-schedule
+app/.env

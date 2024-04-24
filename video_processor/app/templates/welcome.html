@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Page</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+    
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+  <!-- Custom CSS -->
+  <style>
+     .profile-img {
+      width: 40px; /* Set width to 100px or adjust as needed */
+      height: 40px; /* Maintain aspect ratio */
+      border-radius: 50%; /* Make it circular */
+    }
+    /* Custom Navbar Styling */
+    .navbar {
+      background-color: #2c3e50;
+      /* Dark blue */
+    }
+
+    .navbar-brand {
+      color: #ffffff;
+      /* White */
+    }
+
+    .navbar-nav .nav-link {
+      color: #ffffff;
+      /* White */
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #f8f9fa;
+      /* Light grey */
+    }
+
+    .navbar-toggler {
+      border-color: #ffffff;
+      /* White */
+    }
+
+    .navbar-toggler-icon {
+      background-color: #ffffff;
+      /* White */
+    }
+
+    /* Custom Card Styling */
+    .card {
+      margin-bottom: 20px;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #34495e;
+      /* Dark grey */
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group-append button {
+      border-radius: 0 5px 5px 0;
+    }
+
+    .btn-primary {
+      background-color: #3498db;
+      /* Blue */
+      border-color: #3498db;
+      /* Blue */
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+      /* Darker blue */
+      border-color: #2980b9;
+      /* Darker blue */
+    }
+    .badge {
+      bottom: 0; /* Align to the bottom */
+      right: 0; /* Align to the right */
+      background-color: #f39c12; /* Yellow */
+      color: #fff; /* White text */
+      padding: 5px 10px; /* Padding */
+      border-radius: 10px; /* Rounded corners */
+      font-size: 12px; /* Font size */
+    }
+    .badge i {
+      margin-right: 5px; /* Add space between icon and text */
+    }
+  </style>
+</head>
+
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+  <div id="app">
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <a class="navbar-brand" href="#">Edulance.AI</a>
+      <div class="mx-1 badge">
+        <i class="fas fa-star"></i>  <!-- Star icon -->
+        10 credits left <!-- Credits text -->
+      </div>
+    
+    
+      
+      <img src="{{user['picture']}}" class="profile-img" ></img>
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/welcome">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Go to Modules</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Settings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Leaderboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout <i class="fas fa-sign-out-alt"></i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="jumbotron mt-3">
+      <h1 class="display-8">Welcome, {{user['given_name']}} {{user['family_name']}}</h1>
+      <p class="lead">Get Started with learning by extracting info from Videos.</p>
+      <hr class="my-4">
+      <p>Start learning on your modules made earlier.</p>
+      <a class="btn btn-primary btn-lg" href="#" role="button">Start Learning </a>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Youtube URL:</h5>
+              <div class="input-group" v-for="(input, index) in inputs" :key="index">
+                <input type="text" class="form-control" v-model="input.url" placeholder="Enter Youtube URL" />
+                <div class="input-group-append">
+                  <button class="btn btn-primary" type="button" @click="toggleInput(index)">
+                    <i v-if="input.expanded" class="fas fa-minus"></i>
+                    <i v-else class="fas fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <button class="btn btn-primary" type="button" @click="startProcess">
+                Start Process
+              </button>
+            </div>
+            <div v-if="expanded" class="card-body">
+              <h5 class="card-title">Your Stats:</h5>
+              <p>
+                <i class="fas fa-coins mr-2"></i>
+                Credits Left: {{ xp }}
+              </p>
+              <p>
+                <i class="fas fa-trophy mr-2"></i>
+                Leaderboard: {{ leaderboardRank }}th
+              </p>
+              <p>
+                <i class="fas fa-fire mr-2"></i>
+                Daily streak: {{ dailyStreak }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Vue.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Vue.js Logic -->
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        inputs: [{ url: '', expanded: false }],
+        youtubeUrl: '',
+        expanded: false,
+        xp: 100, // Example XP value
+        leaderboardRank: 5, // Example leaderboard rank
+        dailyStreak: 7 // Example daily streak
+      },
+      methods: {
+
+        addInput() {
+          console.log("Received")
+          this.inputs.push({ url: '', expanded: false });
+        },
+        deleteInput(index) {
+          this.inputs.splice(index, 1); // Remove the input at the specified index
+        }
+        ,
+        toggleInput(index) {
+          this.inputs[index].expanded = !this.inputs[index].expanded;
+          if (this.inputs[index].expanded) {
+            this.addInput();
+          }
+          else {
+            this.deleteInput(index);
+          }
+        },
+        startProcess(){
+          console.log("Process Started !!")
+          console.log("Sending this : ", this.inputs)
+          const urls = this.inputs.map(item => item.url);
+
+          console.log(urls); 
+        }
+
+      }
+    });
+  </script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+      apiKey: "AIzaSyClcnpxkcdGetncCH6LDP1Lpbk2NFxXcAI",
+      authDomain: "edulance-5e6bb.firebaseapp.com",
+      projectId: "edulance-5e6bb",
+      storageBucket: "edulance-5e6bb.appspot.com",
+      messagingSenderId: "306265969603",
+      appId: "1:306265969603:web:4b3f0ddb0a2b02b9f6e376",
+      measurementId: "G-ESX8NGLVJ1",
+      clientId: "306265969603-d8i95dtppd14mo571jblqle2j7g5n1ie.apps.googleusercontent.com",
+      scopes: [
+          "email",
+          "profile",
+          "https://www.googleapis.com/auth/calendar"
+      ],
+      discoveryDocs: [
+          "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"
+      ]
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+
+  var uiConfig = {
+      signInSuccessUrl: "https://5500-pranjalkar9-vectrapipel-iainnpeuv2k.ws-us110.gitpod.io/video_processor/app/templates/secure.html", // Assuming you are running on your local machine
+      signInOptions: [
+          {
+              provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              scopes: config.scopes
+          }
+      ],
+      // Terms of service url.
+      tosUrl: "https://5500-pranjalkar9-vectrapipel-iainnpeuv2k.ws-us110.gitpod.io/video_processor/app/templates/terms.html"
+  };
+
+  var ui = new firebaseui.auth.AuthUI(firebase.auth());
+  // The start method will wait until the DOM is loaded.
+  ui.start("#firebaseui-auth-container", uiConfig);
+  firebase.auth().onAuthStateChanged(function (user) {
+      console.log(user)
+      // Make sure there is a valid user object
+      if (user) {
+          var script = document.createElement("script");
+          script.type = "text/javascript";
+          script.src = "https://apis.google.com/js/api.js";
+          // Once the Google API Client is loaded, you can run your code
+          script.onload = function (e) {
+              // Initialize the Google API Client with the config object
+              gapi.client
+                  .init({
+                      apiKey: config.apiKey,
+                      clientId: config.clientID,
+                      discoveryDocs: config.discoveryDocs,
+                      scope: config.scopes.join(" ")
+                  })
+                  // Loading is finished, so start the app
+                  .then(function () {
+                      // Make sure the Google API Client is properly signed in
+                      if (gapi.auth2.getAuthInstance().isSignedIn.get()) {
+                          startApp(user);
+                      } else {
+                          firebase.auth().signOut(); // Something went wrong, sign out
+                      }
+                  });
+          };
+          // Add to the document
+          document.getElementsByTagName("head")[0].appendChild(script);
+      }
+  });
+
+  function startApp(user) {
+      console.log(user);
+
+      // Make sure to refresh the Auth Token in case it expires!
+      firebase.auth().currentUser.getIdToken(true)
+          .then(function () {
+              return gapi.client.calendar.events
+                  .list({
+                      calendarId: "primary",
+                      timeMin: new Date().toISOString(),
+                      showDeleted: false,
+                      singleEvents: true,
+                      maxResults: 10,
+                      orderBy: "startTime"
+                  })
+          })
+          .then(function (response) {
+              console.log(response);
+          });
+  }
+</script>
+</body>
+
+</html>
