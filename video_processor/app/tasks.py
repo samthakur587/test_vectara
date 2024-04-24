@@ -15,7 +15,7 @@ app = Celery('tasks', broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND,  
 
 
 @app.task
-def process_video(video_url):
+def process_video(key:str,video_url:str):
     print("Start processing the video")
     subprocess.run(['python', 'app/utils.py', video_url])
 
@@ -28,26 +28,34 @@ def process_video(video_url):
     #subprocess.run(['python', 'app/ocr.py'])
     with open('data.json', 'r') as file:
         data = json.load(file)
-    return "done"
-
-
-@app.task
-def upload_to_vectara(video_url):
-    with open('data.json', 'r') as file:
-        data = json.load(file)
-
+    base = os.getcwd() + "/"+"mixed_data"
+    video_data = os.getcwd() + "/"+ "video_data"
     t = data[-1]
-    print(t)
-    base = "mixed_data"
-    print(os.listdir(base))
-    transcript = base+"/output_"+t["Author"]
-    print(os.listdir(transcript))
+    transcript = base+"/output_"+t["Author"]+"/"+f"transcript_{t['Title']}_text.txt"
+    with open(transcript,'r') as f:
+        str_input = f.read()
+    shutil.rmtree(base)
+    shutil.rmtree(video_data)
+    return str_input
 
-    #@samunder ye check karna lagta hai error hai...
-    print("Starting Uploading")
-    upload_file(transcript)
-    shutil.rmtree("mixed_data")
-    shutil.rmtree('video_data')
-    return "done"
+
+# @app.task
+# def upload_to_vectara(video_url):
+#     with open('data.json', 'r') as file:
+#         data = json.load(file)
+
+#     t = data[-1]
+#     print(t)
+#     base = "mixed_data"
+#     print(os.listdir(base))
+#     transcript = base+"/output_"+t["Author"]
+#     print(os.listdir(transcript))
+
+#     #@samunder ye check karna lagta hai error hai...
+#     print("Starting Uploading")
+#     upload_file(transcript)
+#     shutil.rmtree("mixed_data")
+#     shutil.rmtree('video_data')
+#     return "done"
 
 app.tasks.register(process_video)

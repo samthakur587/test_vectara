@@ -82,7 +82,7 @@ def audio_to_text(audio_path):
     return text
 
 if __name__=="__main__":
-    video_to_images(filepath, output_frame_folder)
+    #video_to_images(filepath, output_frame_folder)
     video_to_audio(filepath, output_audio_path)
     text_data = audio_to_text(output_audio_path)
     os.remove(filepath)

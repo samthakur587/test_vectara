@@ -10,7 +10,7 @@ import sys
 video_url = sys.argv[1]
 
 # Your video processing code here
-output_video_path = f"video_data/"
+output_video_path = os.getcwd()+"/" + f"video_data/"
 def download_video(url, output_path):
     """
     Download a video from a given url and save it to the output path.
@@ -39,14 +39,14 @@ def create_folder(folder_path):
     else:
         print(f"Folder '{folder_path}' already exists.")
 
-output_folder = "mixed_data/"
+output_folder = os.getcwd()+"/"+"mixed_data/"
 create_folder(output_folder)
 metadata_vid,modified_string = download_video(video_url, output_video_path)
-output_frame_folder = f"mixed_data/frames_{metadata_vid['Author']}/{modified_string}/"
+output_frame_folder = os.getcwd()+"/"+f"mixed_data/frames_{metadata_vid['Author']}/{modified_string}/"
 create_folder(output_frame_folder)
-audio_folder = f"mixed_data/output_{metadata_vid['Author']}/"
+audio_folder = os.getcwd()+"/" + f"mixed_data/output_{metadata_vid['Author']}/"
 create_folder(audio_folder)
-output_audio_path = f"mixed_data/output_{metadata_vid['Author']}/{modified_string}_audio.wav"
+output_audio_path = os.getcwd()+"/" + f"mixed_data/output_{metadata_vid['Author']}/{modified_string}_audio.wav"
 metadata_vid["Title"] = modified_string
 filepath = output_video_path + f"/{metadata_vid['Author']}/" + f"input_vid_{modified_string}.mp4"
 

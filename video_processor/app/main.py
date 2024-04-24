@@ -7,7 +7,7 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from app.tasks import upload_to_vectara
+#from app.tasks import upload_to_vectara
 from fastapi.staticfiles import StaticFiles
 import json
 from celery import chain
@@ -46,6 +46,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 class VideoProcessRequest(BaseModel):
     video_url: str
+    key:str
 
 
 
@@ -105,7 +106,7 @@ def logout(request: Request):
 @app.post("/process_video")
 async def process_video_endpoint(request: VideoProcessRequest):
     # Chain the tasks
-    task_chain = chain(process_video.s(request.video_url), upload_to_vectara.s())
+    task_chain = chain(process_video.s(request.key,request.video_url))
     result = task_chain.delay()
 
     return {"task_id": result.id}
